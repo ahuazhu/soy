@@ -1,0 +1,24 @@
+# maven
+target/
+
+
+# intelliJ IDEA
+.idea/
+*.iml
+
+# eclipse
+.classpath
+.project
+
+
+# Mac OS
+.DS_Store
+
+
+# other
+.settings
+*.swap
+*.orig
+
+# jvm
+hs_err_pid*
