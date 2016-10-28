@@ -11,6 +11,9 @@
     <modules>
         <module>soy-common</module>
         <module>soy-http</module>
+        <module>soy-spring</module>
+        <module>soy-example</module>
+        <module>soy-consumer</module>
     </modules>
 
 

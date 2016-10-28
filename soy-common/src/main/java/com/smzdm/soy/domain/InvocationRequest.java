@@ -1,6 +1,5 @@
 package com.smzdm.soy.domain;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
@@ -16,7 +15,7 @@ public interface InvocationRequest<T> {
 
     Object[] getInvokeArguments();
 
-    Annotation[] getInvokeClassAnnotations();
-
-    Annotation[][] getInvokeArgumentsAnnotations();
+//    Annotation[] getInvokeClassAnnotations();
+//
+//    Annotation[][] getInvokeArgumentsAnnotations();
 }

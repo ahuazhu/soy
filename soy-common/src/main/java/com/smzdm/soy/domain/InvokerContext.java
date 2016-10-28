@@ -25,5 +25,4 @@ public interface InvokerContext<S> {
 
     Map<String, Serializable> getContextValues();
 
-
 }
