@@ -1,6 +1,7 @@
-package com.smzdm.soy.invoker.annotation;
+package com.smzdm.soy.http.annotation;
 
 
+import com.smzdm.soy.http.domain.Method;
 import com.smzdm.soy.util.BuiltIn;
 
 /**
