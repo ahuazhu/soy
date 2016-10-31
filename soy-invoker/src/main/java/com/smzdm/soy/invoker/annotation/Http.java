@@ -1,4 +1,5 @@
-package com.smzdm.soy.sonsumer.annotation;
+package com.smzdm.soy.invoker.annotation;
+
 
 import com.smzdm.soy.util.BuiltIn;
 

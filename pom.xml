@@ -13,7 +13,7 @@
         <module>soy-http</module>
         <module>soy-spring</module>
         <module>soy-example</module>
-        <module>soy-consumer</module>
+        <module>soy-invoker</module>
     </modules>
 
 

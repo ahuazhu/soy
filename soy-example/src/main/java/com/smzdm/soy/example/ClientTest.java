@@ -1,10 +1,11 @@
 package com.smzdm.soy.example;
 
-import com.smzdm.soy.sonsumer.annotation.*;
-import com.smzdm.soy.util.BuiltIn.Serialize;
+import com.smzdm.soy.invoker.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
+
+import static com.smzdm.soy.util.BuiltIn.Serialize;
 
 /**
  * Created by zhengwenzhu on 16/10/28.

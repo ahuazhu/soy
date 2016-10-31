@@ -1,6 +1,7 @@
 package com.smzdm.soy.domain;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 /**
  * Created by zhengwenzhu on 16/10/27.
@@ -14,8 +15,4 @@ public interface InvocationRequest<T> {
     Class<?>[] getInvokeArgumentTypes();
 
     Object[] getInvokeArguments();
-
-//    Annotation[] getInvokeClassAnnotations();
-//
-//    Annotation[][] getInvokeArgumentsAnnotations();
 }
