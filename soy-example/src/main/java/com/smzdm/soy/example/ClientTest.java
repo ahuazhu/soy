@@ -1,6 +1,11 @@
 package com.smzdm.soy.example;
 
-import com.smzdm.soy.invoker.annotation.*;
+
+import com.smzdm.soy.http.annotation.Header;
+import com.smzdm.soy.http.annotation.Http;
+import com.smzdm.soy.http.annotation.Param;
+import com.smzdm.soy.http.annotation.PathParam;
+import com.smzdm.soy.http.domain.Method;
 
 import java.util.Date;
 import java.util.Map;
