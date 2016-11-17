@@ -5,6 +5,10 @@ package com.smzdm.soy.util;
  */
 public class BuiltIn {
 
+    public enum Proto {
+        HTTP,
+    }
+
     public enum CallType {
         Sync,
         ONEWAY,

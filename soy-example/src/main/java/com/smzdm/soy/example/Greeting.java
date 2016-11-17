@@ -4,6 +4,7 @@ package com.smzdm.soy.example;
  * Created by zhengwenzhu on 16/10/28.
  */
 public class Greeting {
+
     private String from;
 
     private String to;

@@ -10,6 +10,6 @@ public enum Method {
     PUT,
     HEAD,
     OPTION,
-    DELETE, method,
+    DELETE,
 }
 

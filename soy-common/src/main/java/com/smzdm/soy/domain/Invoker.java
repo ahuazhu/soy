@@ -7,6 +7,6 @@ import com.smzdm.soy.exception.SoyException;
  */
 public interface Invoker {
 
-    void invoke(InvokerContext context) throws SoyException;
+    String invoke(InvokerContext context) throws SoyException;
 
 }

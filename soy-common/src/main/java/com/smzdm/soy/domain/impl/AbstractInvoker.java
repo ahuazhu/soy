@@ -16,7 +16,8 @@ public abstract class AbstractInvoker implements Invoker {
         this.codec = serializer;
     }
 
-    public void invoke(InvokerContext context) throws SoyException {
+    public String invoke(InvokerContext context) throws SoyException {
 
+        return null;
     }
 }

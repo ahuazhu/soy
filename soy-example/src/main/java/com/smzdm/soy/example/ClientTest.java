@@ -16,10 +16,16 @@ import static com.smzdm.soy.util.BuiltIn.Serialize;
  * Created by zhengwenzhu on 16/10/28.
  */
 public interface ClientTest {
-    @Http(method = Method.GET, path = "/123", serialize = Serialize.JSON, responseSerialize = Serialize.JSON)
+    @Http(method = Method.GET, path = "/hello", serialize = Serialize.JSON, responseSerialize = Serialize.JSON)
     Reply sayHi(@Param("greeting") Greeting greeting,
-                @Param("date") Date date,
+                @Param("param1") String param1,
+                @Param("param2") String param2,
+                @Param Map<String, String> params,
                 @Header Map<String, String> headers,
                 @PathParam Map<String, String> pathParam);
+
+
+
+    Student student();
 
 }

@@ -25,6 +25,8 @@ import java.util.Map;
 public class DefaultChannelRequestCodec implements HttpChannelRequestCodec {
 
 
+    public static final String SOY_DEFAULT_PARAMETER_KEY = "_SOY_DEFAULT_PARAMETER_KEY_";
+
     public HttpRequest newRequest(InvokerContext context) {
         DefaultHttpRequest httpRequest = new DefaultHttpRequest();
 
@@ -65,6 +67,9 @@ public class DefaultChannelRequestCodec implements HttpChannelRequestCodec {
             for (Annotation a : annotations) {
                 if (a instanceof Param) {
                     addToParameter(httpRequest, map);
+                    if (map.get(SOY_DEFAULT_PARAMETER_KEY) != null) {
+                        httpRequest.addParameter(((Param) a).value(), map.get(SOY_DEFAULT_PARAMETER_KEY));
+                    }
                 }
                 if (a instanceof Header) {
                     addToHeader(httpRequest, map);
@@ -86,7 +91,9 @@ public class DefaultChannelRequestCodec implements HttpChannelRequestCodec {
 
     private void addToParameter(DefaultHttpRequest httpRequest, Map<String, String> map) {
         for (String k : map.keySet()) {
-            httpRequest.addParameter(k, map.get(k));
+            if (!SOY_DEFAULT_PARAMETER_KEY.equals(k)) {
+                httpRequest.addParameter(k, map.get(k));
+            }
         }
 
     }
@@ -104,17 +111,24 @@ public class DefaultChannelRequestCodec implements HttpChannelRequestCodec {
             for (Object k : m.keySet()) {
                 if (k.getClass() == String.class) {
                     Object v = m.get(k);
-                    map.put((String) k, String.valueOf(v));
+                    if (v != null) {
+                        map.put((String) k, String.valueOf(v));
+                    }
                 } else {
                     throw new SoyRequestException("parameter key is not String " + k);
                 }
             }
+        } else if (isBasicType(argumentType)) {
+            map.put(SOY_DEFAULT_PARAMETER_KEY, String.valueOf(argument));
         } else {
             Field[] fields = argumentType.getDeclaredFields();
             for (Field field : fields) {
+                field.setAccessible(true);
                 if (field.isAccessible()) {
                     try {
-                        map.put(field.getName(), String.valueOf(field.get(argument)));
+                        if (field.get(argument) != null) {
+                            map.put(field.getName(), String.valueOf(field.get(argument)));
+                        }
                     } catch (IllegalAccessException e) {
                         throw new SoyRequestException(e);
                     }
@@ -122,6 +136,30 @@ public class DefaultChannelRequestCodec implements HttpChannelRequestCodec {
             }
         }
         return map;
+    }
+
+    private boolean isBasicType(Class<?> argumentType) {
+
+        return argumentType == Integer.TYPE
+                || argumentType == int.class
+                || argumentType == Short.TYPE
+                || argumentType == short.class
+                || argumentType == Boolean.TYPE
+                || argumentType == boolean.class
+                || argumentType == Byte.TYPE
+                || argumentType == byte.class
+                || argumentType == Long.class
+                || argumentType == long.class
+                || argumentType == Float.class
+                || argumentType == float.class
+                || argumentType == Double.class
+                || argumentType == double.class
+                || argumentType == Character.class
+                || argumentType == char.class
+                || argumentType == String.class
+                || argumentType.isAssignableFrom(CharSequence.class);
+
+
     }
 
     private void parse(InvokerConfig config, DefaultHttpRequest request) {
@@ -134,7 +172,7 @@ public class DefaultChannelRequestCodec implements HttpChannelRequestCodec {
             request.setMethod(http.method());
             request.setUrl(request.getUrl() + http.path());
         } else {
-            throw new SoyRequestException();
+            request.setMethod(com.smzdm.soy.http.domain.Method.GET);
         }
     }
 }
