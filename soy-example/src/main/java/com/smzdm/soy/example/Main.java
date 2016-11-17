@@ -1,14 +1,9 @@
 package com.smzdm.soy.example;
 
-import com.smzdm.soy.domain.Invoker;
 import com.smzdm.soy.domain.InvokerConfig;
-import com.smzdm.soy.domain.ServiceFactory;
 import com.smzdm.soy.domain.impl.DefaultInvokerConfig;
-import com.smzdm.soy.http.Module;
+import com.smzdm.soy.invoker.ServiceFactory;
 import com.smzdm.soy.util.BuiltIn;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by zhengwenzhu on 2016/11/9.
@@ -16,8 +11,6 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
-
-        new Module().init();
 
         InvokerConfig<ClientTest> config = makeConfig();
 
