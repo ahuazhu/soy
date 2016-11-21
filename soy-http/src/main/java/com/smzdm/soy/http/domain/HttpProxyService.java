@@ -1,9 +1,9 @@
 package com.smzdm.soy.http.domain;
 
-import com.google.gson.Gson;
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Transaction;
 import com.smzdm.soy.domain.*;
 import com.smzdm.soy.domain.impl.DefaultInvocationContext;
-import com.smzdm.soy.http.codec.impl.DefaultChannelRequestCodec;
 import com.smzdm.soy.http.domain.impl.HttpInvoker;
 
 import java.lang.reflect.InvocationHandler;
@@ -27,39 +27,51 @@ public class HttpProxyService<S> implements ProxyService<S> {
 
         private InvokerConfig invokerConfig;
 
+        private HttpInvoker invoker = new HttpInvoker();
+
         public HttpInvocationHandler(InvokerConfig invokerConfig) {
             this.invokerConfig = invokerConfig;
         }
 
         public Object invoke(Object proxy, final java.lang.reflect.Method method, final Object[] args) throws Throwable {
 
-            InvokerContext context = new DefaultInvocationContext(invokerConfig);
-            context.setInvocationRequest(new InvocationRequest() {
-                public Object getInvokeInterface() {
-                    return invokerConfig.getInterface();
-                }
+            Transaction t = Cat.newTransaction("Call", method.getName());
 
-                public Method getInvokeMethod() {
-                    return method;
-                }
+            try {
+                InvokerContext context = new DefaultInvocationContext(invokerConfig);
+                context.setInvocationRequest(new InvocationRequest() {
+                    public Object getInvokeInterface() {
+                        return invokerConfig.getInterface();
+                    }
 
-                public Class<?>[] getInvokeArgumentTypes() {
-                    return method.getParameterTypes();
-                }
+                    public Method getInvokeMethod() {
+                        return method;
+                    }
 
-                public Object[] getInvokeArguments() {
-                    return args;
-                }
-            });
+                    public Class<?>[] getInvokeArgumentTypes() {
+                        return method.getParameterTypes();
+                    }
 
-            context.setInvocationResponse(new InvocationResponse() {
-            });
+                    public Object[] getInvokeArguments() {
+                        return args;
+                    }
+                });
 
-            HttpRequest request = new DefaultChannelRequestCodec().newRequest(context);
+                context.setInvocationResponse(new InvocationResponse() {
+                });
 
-            String result = new HttpInvoker(request).invoke(context);
+                String result = invoker.invoke(context);
 
-            return new Gson().fromJson(result, method.getReturnType());
+                Object r = CodecFactory.getCodec(invokerConfig.getSerialize().name()).decode(result, method.getReturnType());
+
+                t.setStatus(Transaction.SUCCESS);
+                return r;
+            } catch (Throwable e) {
+                t.setStatus(e);
+                throw e;
+            } finally {
+                t.complete();
+            }
         }
     }
 

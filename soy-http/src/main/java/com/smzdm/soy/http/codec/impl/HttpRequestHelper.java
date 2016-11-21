@@ -8,7 +8,7 @@ import com.smzdm.soy.http.annotation.Header;
 import com.smzdm.soy.http.annotation.Http;
 import com.smzdm.soy.http.annotation.Param;
 import com.smzdm.soy.http.annotation.PathParam;
-import com.smzdm.soy.http.codec.HttpChannelRequestCodec;
+import com.smzdm.soy.http.codec.RequestHelper;
 import com.smzdm.soy.http.domain.HttpRequest;
 import com.smzdm.soy.http.domain.impl.DefaultHttpRequest;
 import org.apache.commons.lang3.text.StrSubstitutor;
@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Created by zhengwenzhu on 16/10/28.
  */
-public class DefaultChannelRequestCodec implements HttpChannelRequestCodec {
+public class HttpRequestHelper implements RequestHelper {
 
 
     public static final String SOY_DEFAULT_PARAMETER_KEY = "_SOY_DEFAULT_PARAMETER_KEY_";

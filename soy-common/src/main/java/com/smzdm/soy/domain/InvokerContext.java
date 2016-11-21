@@ -19,9 +19,9 @@ public interface InvokerContext<S> {
 
     void setInvocationResponse(InvocationResponse response);
 
-    Serializable getContextValue(String key);
+    Object getContextValue(String key);
 
-    void putContextValue(String key, Serializable value);
+    void putContextValue(String key, Object value);
 
     Map<String, Serializable> getContextValues();
 

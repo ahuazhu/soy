@@ -6,7 +6,7 @@ import com.smzdm.soy.http.domain.HttpRequest;
 /**
  * Created by zhengwenzhu on 16/10/28.
  */
-public interface HttpChannelRequestCodec {
+public interface RequestHelper {
 
     HttpRequest newRequest(InvokerContext context);
 

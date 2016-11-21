@@ -1,5 +1,6 @@
-package com.smzdm.soy.domain;
+package com.smzdm.soy.invoker;
 
+import com.smzdm.soy.domain.InvokerContext;
 import com.smzdm.soy.exception.SoyException;
 
 /**

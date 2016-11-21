@@ -2,6 +2,7 @@ package com.smzdm.soy.example;
 
 import com.smzdm.soy.domain.InvokerConfig;
 import com.smzdm.soy.domain.impl.DefaultInvokerConfig;
+import com.smzdm.soy.exception.SoyException;
 import com.smzdm.soy.invoker.ServiceFactory;
 import com.smzdm.soy.util.BuiltIn;
 
@@ -17,9 +18,25 @@ public class Main {
 
         ClientTest clientTest = ServiceFactory.getService(config);
 
-        Student student = clientTest.student();
+        int success = 0;
 
-        System.out.print(student);
+        int fail =0;
+
+        for (int i = 0; i < 100000; i ++) {
+            try {
+                Student student = clientTest.student();
+
+                success ++;
+//                System.out.println(student);
+            } catch (SoyException e) {
+                //
+                e.printStackTrace();
+                fail ++;
+            }
+        }
+
+        System.out.println(success);
+        System.out.println(fail);
 
     }
 
@@ -27,9 +44,9 @@ public class Main {
         InvokerConfig<ClientTest> config = new DefaultInvokerConfig<ClientTest>();
 
         config.setCallType(BuiltIn.CallType.Sync);
-        config.setServiceName("http://localhost:8080");
+        config.setServiceName("http://localhost:9999");
         config.setSerialize(BuiltIn.Serialize.JSON);
-        config.setTimeout(500);
+        config.setTimeout(100);
         config.setProto(BuiltIn.Proto.HTTP);
         config.setInterface(ClientTest.class);
         return config;

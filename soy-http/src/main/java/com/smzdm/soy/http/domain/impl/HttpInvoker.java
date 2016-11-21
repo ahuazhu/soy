@@ -1,12 +1,14 @@
 package com.smzdm.soy.http.domain.impl;
 
-import com.smzdm.soy.domain.Invoker;
 import com.smzdm.soy.domain.InvokerContext;
 import com.smzdm.soy.exception.SoyException;
 import com.smzdm.soy.exception.SoyResponseException;
+import com.smzdm.soy.http.codec.impl.HttpRequestHelper;
 import com.smzdm.soy.http.domain.HttpRequest;
+import com.smzdm.soy.invoker.AbstractInvoker;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -21,33 +23,47 @@ import java.util.Map;
 /**
  * Created by zhengwenzhu on 2016/11/16.
  */
-public class HttpInvoker implements Invoker {
+public class HttpInvoker extends AbstractInvoker {
 
-    private HttpRequest httpRequest;
 
-    public HttpInvoker(HttpRequest request) {
-        this.httpRequest = request;
+    public String doInvoke(InvokerContext context) throws SoyException {
+
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectionRequestTimeout(context.getInvokerConfig().getTimeout())
+                .setConnectTimeout(context.getInvokerConfig().getTimeout())
+                .setSocketTimeout(context.getInvokerConfig().getTimeout())
+                .build();
+
+
+        return new HttpClient(context, requestConfig).invoke();
     }
 
-    public String invoke(InvokerContext context) throws SoyException {
-        return new HttpClient(httpRequest).invoke();
+    @Override
+    protected void abort(InvokerContext context) {
+        Object o = context.getContextValue("_http_request_task_");
+        if (o != null && o instanceof HttpRequestBase) {
+            HttpRequestBase request = (HttpRequestBase) o;
+            request.abort();
+        }
     }
 
     static class HttpClient {
 
-        private final HttpUriRequest request;
+        private final HttpRequestBase request;
         org.apache.http.client.HttpClient httpClient;
 
-        public HttpClient(HttpRequest request) {
-            this.request = make(request);
+        public HttpClient(InvokerContext context, RequestConfig config) {
+            this.request = make(new HttpRequestHelper().newRequest(context));
             httpClient = HttpClientBuilder.create().build();
+            context.putContextValue("_http_request_task_", this.request);
 
+            this.request.setConfig(config);
         }
 
         public String invoke() {
             try {
                 HttpResponse response = httpClient.execute(request);
-                System.out.println(response.getEntity());
+
                 if (response.getStatusLine() == null || response.getStatusLine().getStatusCode() != 200) {
                     throw new SoyResponseException();
                 }
@@ -60,7 +76,7 @@ public class HttpInvoker implements Invoker {
         }
 
 
-        private HttpUriRequest make(HttpRequest request) {
+        private HttpRequestBase make(HttpRequest request) {
 
             List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
             if (request.getParameterMap() != null) {
@@ -79,7 +95,7 @@ public class HttpInvoker implements Invoker {
             String url = concat(request.getUrl(), param);
 
 
-            HttpUriRequest httpUriRequest = selectMethod(request, url);
+            HttpRequestBase httpUriRequest = selectMethod(request, url);
 
 
             if (request.getHeaderMap() != null) {
@@ -111,9 +127,9 @@ public class HttpInvoker implements Invoker {
             return url;
         }
 
-        private HttpUriRequest selectMethod(HttpRequest request, String url) {
+        private HttpRequestBase selectMethod(HttpRequest request, String url) {
 
-            HttpUriRequest httpUriRequest = null;
+            HttpRequestBase httpUriRequest = null;
 
             switch (request.getMethod()) {
                 case GET:

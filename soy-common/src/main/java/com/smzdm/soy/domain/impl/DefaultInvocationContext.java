@@ -20,7 +20,7 @@ public class DefaultInvocationContext implements InvokerContext {
 
     private InvocationResponse invocationResponse;
 
-    private Map<String, Serializable> context = new HashMap<String, Serializable>();
+    private Map<String, Object> context = new HashMap<String, Object>();
 
     public DefaultInvocationContext(InvokerConfig config) {
         this.invokerConfig = config;
@@ -50,15 +50,15 @@ public class DefaultInvocationContext implements InvokerContext {
         this.invocationResponse = invocationResponse;
     }
 
-    public Serializable getContextValue(String key) {
+    public Object getContextValue(String key) {
         return context.get(key);
     }
 
-    public void putContextValue(String key, Serializable value) {
+    public void putContextValue(String key, Object value) {
         context.put(key, value);
     }
 
-    public Map<String, Serializable> getContextValues() {
+    public Map<String, Object> getContextValues() {
         return context;
     }
 }

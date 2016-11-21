@@ -1,10 +1,11 @@
 package com.smzdm.soy.invoker;
 
+import com.smzdm.soy.Module;
 import com.smzdm.soy.domain.InvokerConfig;
 import com.smzdm.soy.domain.ProxyServiceFactory;
-import com.smzdm.soy.util.BuiltIn;
 
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -17,8 +18,11 @@ public class ServiceFactory {
         if (!initialized) {
             synchronized (ServiceFactory.class) {
                 if (!initialized) {
-                    new com.smzdm.soy.domain.Module().init();
-                    new com.smzdm.soy.http.Module().init();
+                    ServiceLoader<Module> modules = ServiceLoader.load(Module.class);
+                    for (Module module : modules) {
+                        module.init();
+                    }
+                    initialized = true;
                 }
             }
         }
